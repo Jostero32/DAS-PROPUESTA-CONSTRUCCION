@@ -1,0 +1,211 @@
+<!-- Loading -->
+@if (store.loading()) {
+  <div class="loading-screen">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Cargando obra...</p>
+  </div>
+}
+
+@if (store.obraSeleccionada(); as obra) {
+  <div class="obra-detalle">
+
+    <!-- ─── Header con botón volver ─── -->
+    <div class="detalle-header">
+      <button mat-icon-button (click)="volver()" class="btn-back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-info">
+        <h1>{{ obra.nombre }}</h1>
+        <p class="header-cliente">
+          <mat-icon class="inline-icon">person</mat-icon>
+          {{ obra.cliente?.nombre || 'Sin cliente' }}
+        </p>
+      </div>
+      <span class="chip chip-lg" [attr.data-status]="obra.estado">
+        {{ getEstadoLabel(obra.estado) }}
+      </span>
+    </div>
+
+    <!-- ─── Botón Descargar Hoja de Obra ─── -->
+    <button
+      mat-flat-button
+      class="btn-descargar-pdf"
+      (click)="descargarContratoPDF()"
+      [disabled]="descargandoPDF()">
+      @if (descargandoPDF()) {
+        <mat-spinner diameter="20" class="spinner-inline"></mat-spinner>
+        Generando PDF...
+      } @else {
+        <mat-icon>picture_as_pdf</mat-icon>
+        Descargar Hoja de Obra
+      }
+    </button>
+
+    <!-- ─── Tarjetas resumen financiero ─── -->
+    <div class="finance-grid">
+      <div class="finance-card finance-presupuesto">
+        <mat-icon>account_balance_wallet</mat-icon>
+        <div class="finance-data">
+          <span class="finance-amount">{{ obra.presupuesto_mano_obra | currency:'USD':'symbol':'1.0-0' }}</span>
+          <span class="finance-label">Presupuesto</span>
+        </div>
+      </div>
+
+      <div class="finance-card finance-cobrado">
+        <mat-icon>savings</mat-icon>
+        <div class="finance-data">
+          <span class="finance-amount">{{ obra.monto_cobrado | currency:'USD':'symbol':'1.0-0' }}</span>
+          <span class="finance-label">Cobrado</span>
+        </div>
+      </div>
+
+      <div class="finance-card finance-pendiente">
+        <mat-icon>hourglass_empty</mat-icon>
+        <div class="finance-data">
+          <span class="finance-amount">{{ obra.monto_pendiente | currency:'USD':'symbol':'1.0-0' }}</span>
+          <span class="finance-label">Por cobrar</span>
+        </div>
+      </div>
+
+      <div class="finance-card finance-gastado">
+        <mat-icon>receipt_long</mat-icon>
+        <div class="finance-data">
+          <span class="finance-amount">{{ obra.total_gastado | currency:'USD':'symbol':'1.0-0' }}</span>
+          <span class="finance-label">Gastado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Barra de progreso de cobro ─── -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-title">Progreso de cobro</span>
+        <span class="progress-pct">{{ store.progresoCobro() }}%</span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="store.progresoCobro()"
+        class="progress-bar-cobro">
+      </mat-progress-bar>
+      <span class="progress-detail">
+        {{ obra.fases_cobradas }} de {{ obra.total_fases }} fases cobradas
+      </span>
+    </div>
+
+    <!-- ─── Saldo de anticipo (alerta visual) ─── -->
+    <div class="saldo-anticipo" [class.saldo-negativo]="obra.saldo_anticipo < 0">
+      <div class="saldo-icon">
+        <mat-icon>{{ obra.saldo_anticipo >= 0 ? 'check_circle' : 'warning' }}</mat-icon>
+      </div>
+      <div class="saldo-info">
+        <span class="saldo-label">Saldo anticipo materiales</span>
+        <span class="saldo-amount">{{ obra.saldo_anticipo | currency:'USD':'symbol':'1.0-0' }}</span>
+      </div>
+      <div class="saldo-desglose">
+        {{ obra.anticipo_materiales | currency:'USD':'symbol':'1.0-0' }} anticipo
+        &minus;
+        {{ obra.total_gastado | currency:'USD':'symbol':'1.0-0' }} gastado
+      </div>
+    </div>
+
+    <!-- ─── Tabs: Fases y Gastos ─── -->
+    <mat-tab-group class="detalle-tabs" animationDuration="200ms">
+
+      <!-- TAB 1: Fases de Cobro -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">flag</mat-icon>
+          Fases ({{ obra.total_fases }})
+        </ng-template>
+
+        <div class="tab-content">
+          @for (fase of store.fasesSeleccionada(); track fase.id) {
+            <div class="fase-card" [class.fase-cobrada]="fase.estado === 'cobrada'">
+              <div class="fase-header">
+                <div class="fase-orden">{{ fase.orden }}</div>
+                <div class="fase-info">
+                  <span class="fase-nombre">{{ fase.nombre_fase }}</span>
+                  <span class="fase-monto">{{ fase.monto_a_cobrar | currency:'USD':'symbol':'1.0-0' }}</span>
+                </div>
+                <span class="chip" [attr.data-status]="fase.estado">
+                  {{ getEstadoLabel(fase.estado) }}
+                </span>
+              </div>
+
+              @if (fase.url_evidencia_foto) {
+                <div class="fase-evidencia">
+                  <mat-icon class="inline-icon">photo_camera</mat-icon>
+                  <a [href]="fase.url_evidencia_foto" target="_blank" rel="noopener">Ver evidencia</a>
+                </div>
+              }
+
+              @if (getSiguienteEstadoFase(fase.estado)) {
+                <button
+                  mat-flat-button
+                  class="btn-avanzar-fase"
+                  [class.btn-cobrar]="fase.estado === 'en_progreso'"
+                  (click)="avanzarFase(fase)">
+                  <mat-icon>{{ getBotonFaseIcon(fase.estado) }}</mat-icon>
+                  {{ getBotonFaseLabel(fase.estado) }}
+                </button>
+              } @else {
+                <div class="fase-completada-badge">
+                  <mat-icon>verified</mat-icon>
+                  Cobrada
+                </div>
+              }
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <mat-icon>flag</mat-icon>
+              <p>No hay fases registradas</p>
+              <span>Las fases se crean desde la seccion de Fases/Cobros</span>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- TAB 2: Libreta de Gastos -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">receipt_long</mat-icon>
+          Gastos ({{ store.gastosSeleccionada().length }})
+        </ng-template>
+
+        <div class="tab-content">
+          <!-- Botón agregar gasto inline -->
+          <button mat-stroked-button class="btn-agregar-inline" (click)="abrirRegistrarGasto()">
+            <mat-icon>add</mat-icon>
+            Registrar gasto
+          </button>
+
+          @for (gasto of store.gastosSeleccionada(); track gasto.id) {
+            <div class="gasto-card">
+              <div class="gasto-icon-wrap">
+                <mat-icon>shopping_cart</mat-icon>
+              </div>
+              <div class="gasto-info">
+                <span class="gasto-concepto">{{ gasto.concepto }}</span>
+                <span class="gasto-fecha">{{ gasto.fecha | date:'d MMM yyyy' }}</span>
+              </div>
+              <span class="gasto-monto">-{{ gasto.monto | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <mat-icon>receipt_long</mat-icon>
+              <p>No hay gastos registrados</p>
+              <span>Toca el boton de arriba para registrar tu primer gasto</span>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+
+    <!-- FAB flotante para registrar gasto rápido -->
+    <button mat-fab class="fab-gasto" (click)="abrirRegistrarGasto()" matTooltip="Registrar gasto">
+      <mat-icon>add</mat-icon>
+    </button>
+
+  </div>
+}

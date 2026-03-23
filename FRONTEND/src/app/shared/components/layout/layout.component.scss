@@ -1,0 +1,108 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.app-container {
+  height: 100%;
+}
+
+.app-sidenav {
+  width: 260px;
+  border-right: none;
+  background: #0f172a;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  height: 64px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.menu-toggle {
+  color: #475569;
+
+  &:hover {
+    color: #1e293b;
+    background: #f1f5f9;
+  }
+}
+
+.header-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.spacer { flex: 1; }
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #3f51b5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    color: white;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  .user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .user-role {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: capitalize;
+  }
+}
+
+.btn-logout {
+  color: #94a3b8;
+  margin-left: 4px;
+
+  &:hover {
+    color: #dc2626;
+    background: #fef2f2;
+  }
+}
+
+.app-main {
+  padding: 24px;
+  background: #f4f6f8;
+  min-height: calc(100vh - 64px);
+}

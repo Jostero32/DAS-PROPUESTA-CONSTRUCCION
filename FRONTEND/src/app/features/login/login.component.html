@@ -1,0 +1,50 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <div class="login-header">
+      <div class="login-logo-wrap">
+        <mat-icon class="login-logo">construction</mat-icon>
+      </div>
+      <h1>Constructa</h1>
+      <p>Gestiona tus obras de construccion</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Correo electronico</mat-label>
+        <input matInput formControlName="email" type="email" autocomplete="email">
+        <mat-icon matPrefix>email</mat-icon>
+        @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+          <mat-error>Ingrese un email valido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contrasena</mat-label>
+        <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" autocomplete="current-password">
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      @if (error) {
+        <div class="login-error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading" class="login-btn">
+        @if (loading) {
+          <mat-spinner diameter="22"></mat-spinner>
+        } @else {
+          Iniciar Sesion
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Credenciales de prueba: <strong>luis&#64;obra.com</strong> / <strong>Luis123!</strong></p>
+    </div>
+  </mat-card>
+</div>

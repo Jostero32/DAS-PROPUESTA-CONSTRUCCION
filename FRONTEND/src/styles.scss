@@ -1,0 +1,280 @@
+@use '@angular/material' as mat;
+
+// ── Paleta ──
+$primary: mat.define-palette(mat.$indigo-palette, 700);
+$accent: mat.define-palette(mat.$teal-palette, 500);
+$warn: mat.define-palette(mat.$red-palette);
+
+$theme: mat.define-light-theme((
+  color: (primary: $primary, accent: $accent, warn: $warn),
+  typography: mat.define-typography-config($font-family: "'Inter', 'Roboto', sans-serif"),
+  density: 0,
+));
+
+@include mat.all-component-themes($theme);
+
+// ── Reset (sin afectar CDK overlay) ──
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background: #f4f6f8;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ── Cards con contraste definido ──
+.mat-mdc-card {
+  --mdc-elevated-card-container-color: #ffffff;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid #e8ecf1;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  }
+}
+
+// ── Botones con paleta Indigo/Teal ──
+.mat-mdc-raised-button,
+.mat-mdc-flat-button,
+.mat-mdc-unelevated-button {
+  border-radius: 10px !important;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  min-height: 44px;
+
+  &.mat-primary {
+    --mdc-filled-button-container-color: #3949ab;
+    --mdc-filled-button-label-text-color: #ffffff;
+
+    &:hover {
+      --mdc-filled-button-container-color: #303f9f;
+    }
+  }
+
+  &.mat-accent {
+    --mdc-filled-button-container-color: #00897b;
+    --mdc-filled-button-label-text-color: #ffffff;
+
+    &:hover {
+      --mdc-filled-button-container-color: #00796b;
+    }
+  }
+}
+
+.mat-mdc-outlined-button {
+  border-radius: 10px !important;
+  font-weight: 600;
+  min-height: 44px;
+
+  &.mat-primary {
+    --mdc-outlined-button-label-text-color: #3949ab;
+    --mdc-outlined-button-outline-color: #3949ab;
+  }
+
+  &.mat-accent {
+    --mdc-outlined-button-label-text-color: #00897b;
+    --mdc-outlined-button-outline-color: #00897b;
+  }
+}
+
+.mat-mdc-fab, .mat-mdc-mini-fab {
+  &.mat-primary {
+    --mdc-fab-container-color: #3949ab;
+    --mdc-fab-icon-color: #ffffff;
+  }
+
+  &.mat-accent {
+    --mdc-fab-container-color: #00897b;
+    --mdc-fab-icon-color: #ffffff;
+  }
+}
+
+// ── FIX CRITICO: Centrado de modales ──
+.cdk-overlay-container {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.cdk-overlay-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 200ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0;
+
+  &.cdk-overlay-backdrop-showing {
+    opacity: 1;
+  }
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.cdk-overlay-pane {
+  pointer-events: auto;
+  position: absolute;
+  z-index: 1000;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+// ── Dialogo global ──
+.mat-mdc-dialog-container {
+  border-radius: 16px !important;
+
+  .mdc-dialog__surface {
+    border-radius: 16px !important;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+// ── Scrollbar ──
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+// ── Transiciones globales ──
+a, button {
+  transition: all 0.2s ease;
+}
+
+// ── Snackbar ──
+.snack-success {
+  --mdc-snackbar-container-color: #059669;
+  --mdc-snackbar-supporting-text-color: white;
+  --mdc-snackbar-container-shape: 8px;
+}
+
+.snack-error {
+  --mdc-snackbar-container-color: #dc2626;
+  --mdc-snackbar-supporting-text-color: white;
+  --mdc-snackbar-container-shape: 8px;
+}
+
+// ── Chips de estado contextuales ──
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  // Verdes
+  &[data-status="completado"],
+  &[data-status="aprobada"],
+  &[data-status="vigente"],
+  &[data-status="cobrada"],
+  &[data-status="procesado"],
+  &[data-status="conciliada"],
+  &[data-status="activa"],
+  &[data-status="completada"],
+  &[data-status="pagada"],
+  &[data-status="verificada"] {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  // Azules
+  &[data-status="en_ejecucion"],
+  &[data-status="en_progreso"],
+  &[data-status="en_proceso"],
+  &[data-status="emitida"] {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  // Amarillos
+  &[data-status="pendiente"],
+  &[data-status="borrador"],
+  &[data-status="planificado"],
+  &[data-status="recibida"] {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+
+  // Rojos
+  &[data-status="rechazada"],
+  &[data-status="anulada"],
+  &[data-status="cancelada"],
+  &[data-status="devuelto"],
+  &[data-status="ejecutada"] {
+    background: #fce4ec;
+    color: #b71c1c;
+  }
+
+  // Gris
+  &[data-status="pausado"],
+  &[data-status="terminado"],
+  &[data-status="cerrado"],
+  &[data-status="liquidado"],
+  &[data-status="devuelta"] {
+    background: #f1f5f9;
+    color: #475569;
+  }
+}
+
+// ── Form fields globales ──
+.mat-mdc-form-field {
+  .mdc-text-field--outlined {
+    --mdc-outlined-text-field-outline-color: #e2e8f0;
+    --mdc-outlined-text-field-hover-outline-color: #94a3b8;
+    --mdc-outlined-text-field-focus-outline-color: #3f51b5;
+  }
+}
+
+// ── Tooltip ──
+.mat-mdc-tooltip {
+  --mdc-plain-tooltip-container-color: #1e293b;
+  --mdc-plain-tooltip-supporting-text-color: #f1f5f9;
+  --mdc-plain-tooltip-container-shape: 6px;
+}
+
+// ── Dialogo centrado (panelClass para dialog.open) ──
+.centered-dialog {
+  // Fuerza centrado absoluto — arregla el bug del modal en esquina
+  .cdk-global-overlay-wrapper & {
+    margin: auto;
+  }
+
+  // Mobile: borde redondeado y padding del viewport
+  @media (max-width: 480px) {
+    margin: 8px !important;
+  }
+}

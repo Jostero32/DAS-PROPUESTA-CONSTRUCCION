@@ -1,0 +1,27 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+FRONTEND/.angular/
+
+# Uploads (persistidos en Docker volume)
+uploads/
+
+# Entorno
+.env
+*.env.local
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude Code
+.claude/

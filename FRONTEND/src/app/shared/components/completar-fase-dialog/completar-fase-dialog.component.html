@@ -1,0 +1,92 @@
+<!-- Header -->
+<div class="dialog-header" [class.header-cobrar]="esCobrar">
+  <div class="dialog-icon">
+    <mat-icon>{{ iconoAccion }}</mat-icon>
+  </div>
+  <div class="header-text">
+    <h2>{{ tituloAccion }}</h2>
+    <p class="header-fase">{{ data.fase.nombre_fase }}</p>
+  </div>
+</div>
+
+<!-- Content -->
+<mat-dialog-content>
+  <div class="fase-resumen">
+    <div class="resumen-item">
+      <span class="resumen-label">Monto a cobrar</span>
+      <span class="resumen-value">${{ data.fase.monto_a_cobrar | number:'1.0-2' }}</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Estado actual</span>
+      <span class="chip" [attr.data-status]="data.fase.estado">{{ data.fase.estado }}</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Nuevo estado</span>
+      <span class="chip" [attr.data-status]="data.siguienteEstado">{{ data.siguienteEstado }}</span>
+    </div>
+  </div>
+
+  <!-- Foto de evidencia -->
+  <div class="foto-upload-section">
+    <label class="foto-label">
+      <mat-icon class="inline-icon">photo_camera</mat-icon>
+      Foto de evidencia {{ esCobrar ? '(recomendada)' : '(opcional)' }}
+    </label>
+
+    @if (!previewUrl()) {
+      <label class="foto-dropzone" for="inputEvidenciaFoto">
+        <mat-icon>add_a_photo</mat-icon>
+        <span>Toca para subir foto</span>
+        <span class="foto-formats">JPG, PNG, WebP (max 5MB)</span>
+      </label>
+      <input
+        type="file"
+        id="inputEvidenciaFoto"
+        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+        (change)="onArchivoSeleccionado($event)"
+        hidden>
+    } @else {
+      <div class="foto-preview-wrap">
+        <img [src]="previewUrl()" alt="Preview evidencia" class="foto-preview">
+        @if (subiendo()) {
+          <div class="foto-uploading">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <span>Subiendo...</span>
+          </div>
+        }
+        @if (urlEvidencia()) {
+          <div class="foto-uploaded">
+            <mat-icon>check_circle</mat-icon>
+            <span>Foto subida</span>
+          </div>
+        }
+        <button type="button" mat-icon-button class="btn-quitar-foto" (click)="quitarFoto()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+
+    @if (errorSubida()) {
+      <div class="foto-error">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorSubida() }}</span>
+      </div>
+    }
+  </div>
+</mat-dialog-content>
+
+<!-- Actions -->
+<mat-dialog-actions>
+  <button mat-button class="btn-cancel" (click)="cancelar()">
+    Cancelar
+  </button>
+  <button
+    mat-flat-button
+    class="btn-confirmar"
+    [class.btn-cobrar]="esCobrar"
+    [disabled]="subiendo()"
+    (click)="confirmar()">
+    <mat-icon>{{ iconoAccion }}</mat-icon>
+    {{ tituloAccion }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,32 @@
+<mat-sidenav-container class="app-container">
+  <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="app-sidenav">
+    <app-sidebar></app-sidebar>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <header class="app-header">
+      <button mat-icon-button (click)="sidenav.toggle()" class="menu-toggle">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <h2 class="header-title">Constructa</h2>
+      <span class="spacer"></span>
+
+      <div class="user-info">
+        <div class="user-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ auth.currentUser()?.nombre }}</span>
+          <span class="user-role">Maestro Mayor</span>
+        </div>
+      </div>
+
+      <button mat-icon-button (click)="auth.logout()" matTooltip="Cerrar sesion" class="btn-logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </header>
+    <main class="app-main">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

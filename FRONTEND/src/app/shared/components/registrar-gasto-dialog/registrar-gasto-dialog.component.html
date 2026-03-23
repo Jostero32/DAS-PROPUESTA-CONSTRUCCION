@@ -1,0 +1,107 @@
+<!-- Header -->
+<div class="dialog-header">
+  <div class="dialog-icon">
+    <mat-icon>receipt_long</mat-icon>
+  </div>
+  <h2>Registrar gasto</h2>
+</div>
+
+<!-- Form -->
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="guardar()" id="gastoForm" class="gasto-form">
+
+    <!-- Concepto -->
+    <mat-form-field appearance="outline">
+      <mat-label>Concepto</mat-label>
+      <input matInput formControlName="concepto" placeholder="Ej: Cemento, arena, clavos...">
+      <mat-icon matPrefix>description</mat-icon>
+      @if (form.get('concepto')?.hasError('required') && form.get('concepto')?.touched) {
+        <mat-error>El concepto es requerido</mat-error>
+      }
+      @if (form.get('concepto')?.hasError('maxlength')) {
+        <mat-error>Maximo 300 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Monto -->
+    <mat-form-field appearance="outline">
+      <mat-label>Monto ($)</mat-label>
+      <input matInput formControlName="monto" type="number" step="0.01" min="0" inputmode="decimal"
+             placeholder="0.00">
+      <mat-icon matPrefix>attach_money</mat-icon>
+      @if (form.get('monto')?.hasError('required') && form.get('monto')?.touched) {
+        <mat-error>El monto es requerido</mat-error>
+      }
+      @if (form.get('monto')?.hasError('min')) {
+        <mat-error>Debe ser mayor a $0</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Fecha -->
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha</mat-label>
+      <input matInput formControlName="fecha" type="date">
+      <mat-icon matPrefix>calendar_today</mat-icon>
+      @if (form.get('fecha')?.hasError('required') && form.get('fecha')?.touched) {
+        <mat-error>La fecha es requerida</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Foto del recibo (file upload) -->
+    <div class="foto-upload-section">
+      <label class="foto-label">Foto del recibo (opcional)</label>
+
+      @if (!previewUrl()) {
+        <label class="foto-dropzone" for="inputReciboFoto">
+          <mat-icon>add_a_photo</mat-icon>
+          <span>Toca para subir foto</span>
+          <span class="foto-formats">JPG, PNG, WebP (max 5MB)</span>
+        </label>
+        <input
+          type="file"
+          id="inputReciboFoto"
+          accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+          (change)="onArchivoSeleccionado($event)"
+          hidden>
+      } @else {
+        <div class="foto-preview-wrap">
+          <img [src]="previewUrl()" alt="Preview recibo" class="foto-preview">
+          @if (subiendo()) {
+            <div class="foto-uploading">
+              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              <span>Subiendo...</span>
+            </div>
+          }
+          @if (urlRecibo()) {
+            <div class="foto-uploaded">
+              <mat-icon>check_circle</mat-icon>
+              <span>Foto subida</span>
+            </div>
+          }
+          <button type="button" mat-icon-button class="btn-quitar-foto" (click)="quitarFoto()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+
+      @if (errorSubida()) {
+        <div class="foto-error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorSubida() }}</span>
+        </div>
+      }
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<!-- Actions -->
+<mat-dialog-actions>
+  <button mat-button class="btn-cancel" (click)="cancelar()">
+    Cancelar
+  </button>
+  <button mat-flat-button class="btn-save" type="submit" form="gastoForm" [disabled]="subiendo()">
+    <mat-icon>add</mat-icon>
+    Registrar gasto
+  </button>
+</mat-dialog-actions>

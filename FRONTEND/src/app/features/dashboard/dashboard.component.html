@@ -1,0 +1,224 @@
+<div class="dashboard">
+
+  <!-- ─── Header ─── -->
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Resumen financiero de tus obras</p>
+  </div>
+
+  <!-- ─── Stat Cards (conteos rápidos) ─── -->
+  <div class="stats-grid">
+    <div class="stat-card" (click)="navigate('clientes')">
+      <div class="stat-icon" style="background-color: #3f51b514; color: #3f51b5">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="stat-info">
+        @if (loading()) {
+          <div class="skeleton skeleton-number"></div>
+        } @else {
+          <span class="stat-count">{{ totalClientes() }}</span>
+        }
+        <span class="stat-label">Clientes</span>
+      </div>
+      <mat-icon class="stat-arrow">chevron_right</mat-icon>
+    </div>
+
+    <div class="stat-card" (click)="navigate('obras')">
+      <div class="stat-icon" style="background-color: #00968814; color: #009688">
+        <mat-icon>home_repair_service</mat-icon>
+      </div>
+      <div class="stat-info">
+        @if (loading()) {
+          <div class="skeleton skeleton-number"></div>
+        } @else {
+          <span class="stat-count">{{ totalObras() }}</span>
+        }
+        <span class="stat-label">Obras</span>
+      </div>
+      <mat-icon class="stat-arrow">chevron_right</mat-icon>
+    </div>
+
+    <div class="stat-card" (click)="navigate('fases')">
+      <div class="stat-icon" style="background-color: #ff980014; color: #ff9800">
+        <mat-icon>flag</mat-icon>
+      </div>
+      <div class="stat-info">
+        @if (loading()) {
+          <div class="skeleton skeleton-number"></div>
+        } @else {
+          <span class="stat-count">{{ totalFases() }}</span>
+        }
+        <span class="stat-label">Fases</span>
+      </div>
+      <mat-icon class="stat-arrow">chevron_right</mat-icon>
+    </div>
+  </div>
+
+  <!-- ─── KPI Cards (financieros) ─── -->
+  <div class="kpi-section">
+    <h2 class="section-title">
+      <mat-icon>analytics</mat-icon>
+      Liquidez Global
+    </h2>
+
+    <div class="kpi-grid">
+
+      <!-- Total Gastado -->
+      <div class="kpi-card kpi-gastado">
+        @if (loadingCharts()) {
+          <div class="kpi-loading">
+            <div class="skeleton skeleton-icon-circle"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton skeleton-amount"></div>
+              <div class="skeleton skeleton-label"></div>
+            </div>
+          </div>
+        } @else {
+          <div class="kpi-icon">
+            <mat-icon>trending_down</mat-icon>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-amount">{{ totalGastado() | currency:'USD':'symbol':'1.0-0' }}</span>
+            <span class="kpi-label">Total Gastado</span>
+          </div>
+        }
+      </div>
+
+      <!-- Liquidez Restante -->
+      <div class="kpi-card kpi-liquidez" [class.kpi-negativo]="liquidezRestante() < 0">
+        @if (loadingCharts()) {
+          <div class="kpi-loading">
+            <div class="skeleton skeleton-icon-circle"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton skeleton-amount"></div>
+              <div class="skeleton skeleton-label"></div>
+            </div>
+          </div>
+        } @else {
+          <div class="kpi-icon">
+            <mat-icon>{{ liquidezRestante() >= 0 ? 'account_balance' : 'warning' }}</mat-icon>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-amount">{{ liquidezRestante() | currency:'USD':'symbol':'1.0-0' }}</span>
+            <span class="kpi-label">Liquidez Restante</span>
+          </div>
+        }
+      </div>
+
+      <!-- Por Cobrar -->
+      <div class="kpi-card kpi-por-cobrar">
+        @if (loadingCharts()) {
+          <div class="kpi-loading">
+            <div class="skeleton skeleton-icon-circle"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton skeleton-amount"></div>
+              <div class="skeleton skeleton-label"></div>
+            </div>
+          </div>
+        } @else {
+          <div class="kpi-icon">
+            <mat-icon>hourglass_bottom</mat-icon>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-amount">{{ totalPorCobrar() | currency:'USD':'symbol':'1.0-0' }}</span>
+            <span class="kpi-label">Por Cobrar</span>
+          </div>
+        }
+      </div>
+
+      <!-- Ingreso Neto -->
+      <div class="kpi-card kpi-ingreso" [class.kpi-negativo]="ingresoNeto() < 0">
+        @if (loadingCharts()) {
+          <div class="kpi-loading">
+            <div class="skeleton skeleton-icon-circle"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton skeleton-amount"></div>
+              <div class="skeleton skeleton-label"></div>
+            </div>
+          </div>
+        } @else {
+          <div class="kpi-icon">
+            <mat-icon>{{ ingresoNeto() >= 0 ? 'savings' : 'money_off' }}</mat-icon>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-amount">{{ ingresoNeto() | currency:'USD':'symbol':'1.0-0' }}</span>
+            <span class="kpi-label">Ingreso Neto</span>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Charts Section ─── -->
+  <div class="charts-section">
+
+    <!-- Gráfico de Barras: Gastos Mensuales -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-group">
+          <h3>Gastos Mensuales</h3>
+          @if (gastosMensuales(); as gm) {
+            <span class="chart-subtitle">{{ gm.anio }}</span>
+          }
+        </div>
+        @if (gastosMensuales(); as gm) {
+          <span class="chart-total">
+            {{ gm.total_anual | currency:'USD':'symbol':'1.0-0' }}
+            <small>total anual</small>
+          </span>
+        }
+      </div>
+
+      <div class="chart-body chart-bar-body">
+        @if (loadingCharts() || !gastosMensuales()) {
+          <div class="chart-loading">
+            <mat-spinner diameter="36"></mat-spinner>
+            <span>Cargando datos...</span>
+          </div>
+        } @else {
+          <canvas
+            baseChart
+            type="bar"
+            [data]="barChartData()"
+            [options]="barChartOptions">
+          </canvas>
+        }
+      </div>
+    </div>
+
+    <!-- Gráfico de Dona: Presupuesto vs Gastado -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-group">
+          <h3>Presupuesto vs Gastado</h3>
+          <span class="chart-subtitle">Obras activas</span>
+        </div>
+        @if (!loadingCharts()) {
+          <span class="chart-total">
+            {{ totalPresupuesto() | currency:'USD':'symbol':'1.0-0' }}
+            <small>presupuesto</small>
+          </span>
+        }
+      </div>
+
+      <div class="chart-body chart-doughnut-body">
+        @if (loadingCharts()) {
+          <div class="chart-loading">
+            <mat-spinner diameter="36"></mat-spinner>
+            <span>Cargando datos...</span>
+          </div>
+        } @else {
+          <canvas
+            baseChart
+            type="doughnut"
+            [data]="doughnutChartData()"
+            [options]="doughnutChartOptions">
+          </canvas>
+        }
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,87 @@
+<div class="dialog-header">
+  <div class="dialog-icon">
+    <mat-icon>{{ data.isEdit ? 'edit_note' : 'add_circle_outline' }}</mat-icon>
+  </div>
+  <h2>{{ data.isEdit ? 'Editar' : 'Nuevo' }} {{ data.title }}</h2>
+</div>
+
+<mat-dialog-content>
+  @if (loadingOptions) {
+    <div class="loading-options">
+      <mat-spinner diameter="22"></mat-spinner>
+      <span>Cargando opciones...</span>
+    </div>
+  }
+
+  <form [formGroup]="form" class="entity-form" (ngSubmit)="save()">
+    @for (field of visibleFields; track field.key) {
+      @if (field.entitySource) {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ field.label }}</mat-label>
+          <mat-select [formControlName]="field.key">
+            @for (opt of entityOptions[field.key]; track opt.value) {
+              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+            }
+          </mat-select>
+          @if (form.get(field.key)?.hasError('required') && form.get(field.key)?.touched) {
+            <mat-error>{{ field.label }} es requerido</mat-error>
+          }
+        </mat-form-field>
+      } @else if (field.type === 'select') {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ field.label }}</mat-label>
+          <mat-select [formControlName]="field.key">
+            @for (opt of field.options; track opt.value) {
+              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+            }
+          </mat-select>
+          @if (form.get(field.key)?.hasError('required') && form.get(field.key)?.touched) {
+            <mat-error>{{ field.label }} es requerido</mat-error>
+          }
+        </mat-form-field>
+      } @else if (field.type === 'textarea') {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ field.label }}</mat-label>
+          <textarea matInput [formControlName]="field.key" rows="3"></textarea>
+          @if (form.get(field.key)?.hasError('required') && form.get(field.key)?.touched) {
+            <mat-error>{{ field.label }} es requerido</mat-error>
+          }
+        </mat-form-field>
+      } @else if (field.type === 'boolean') {
+        <mat-checkbox [formControlName]="field.key" class="bool-field">
+          {{ field.label }}
+        </mat-checkbox>
+      } @else if (field.type === 'password') {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ field.label }}</mat-label>
+          <input matInput [formControlName]="field.key" [type]="hidePassword ? 'password' : 'text'">
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.get(field.key)?.hasError('required') && form.get(field.key)?.touched) {
+            <mat-error>{{ field.label }} es requerido</mat-error>
+          }
+        </mat-form-field>
+      } @else {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ field.label }}</mat-label>
+          <input matInput [formControlName]="field.key" [type]="getInputType(field)">
+          @if (form.get(field.key)?.hasError('required') && form.get(field.key)?.touched) {
+            <mat-error>{{ field.label }} es requerido</mat-error>
+          }
+          @if (form.get(field.key)?.hasError('email') && form.get(field.key)?.touched) {
+            <mat-error>Ingrese un email valido</mat-error>
+          }
+        </mat-form-field>
+      }
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close class="btn-cancel">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="loadingOptions" class="btn-save">
+    <mat-icon>{{ data.isEdit ? 'save' : 'add' }}</mat-icon>
+    {{ data.isEdit ? 'Guardar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16
+    container_name: constructa_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: constructa
+      POSTGRES_USER: constructa_user
+      POSTGRES_PASSWORD: constructa_password
+    ports:
+      - "5499:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./BACKEND
+      dockerfile: Dockerfile.dev
+    container_name: constructa_backend
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: constructa
+      DB_USER: constructa_user
+      DB_PASSWORD: constructa_password
+      JWT_SECRET: constructa_secret_key_2024
+      NODE_ENV: development
+    ports:
+      - "3700:3000"
+    volumes:
+      - ./BACKEND:/app
+      - /app/node_modules
+      - uploads_data:/app/uploads
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./FRONTEND
+      dockerfile: Dockerfile.dev
+    container_name: constructa_frontend
+    restart: unless-stopped
+    ports:
+      - "4280:4200"
+    volumes:
+      - ./FRONTEND:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  uploads_data:

@@ -1,0 +1,623 @@
+// ── Variables del tema ──
+$indigo: #3f51b5;
+$indigo-light: #e8eaf6;
+$teal: #009688;
+$teal-light: #e0f2f1;
+$green: #059669;
+$green-light: #dcfce7;
+$amber: #d97706;
+$amber-light: #fef3c7;
+$red: #dc2626;
+$red-light: #fee2e2;
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-700: #334155;
+$slate-900: #0f172a;
+
+// ── Loading ──
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 20px;
+  color: $slate-500;
+
+  p {
+    margin: 0;
+    font-size: 15px;
+  }
+}
+
+// ── Container ──
+.obra-detalle {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 0 32px;
+}
+
+// ── Header ──
+.detalle-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0 20px;
+
+  .btn-back {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .header-info {
+    flex: 1;
+    min-width: 0;
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: $slate-900;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-cliente {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: $slate-500;
+    }
+  }
+
+  .chip-lg {
+    font-size: 13px;
+    padding: 5px 14px;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+}
+
+.inline-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+// ── Botón Descargar PDF ──
+.btn-descargar-pdf {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  background: $indigo;
+  color: white;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba($indigo, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .spinner-inline {
+    display: inline-block;
+  }
+
+  &:hover:not([disabled]) {
+    box-shadow: 0 4px 16px rgba($indigo, 0.35);
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+  }
+}
+
+// ── Finance Grid (2x2 mobile) ──
+.finance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.finance-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: white;
+  border: 1px solid $slate-200;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .finance-data {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .finance-amount {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: $slate-900;
+  }
+
+  .finance-label {
+    font-size: 11.5px;
+    color: $slate-500;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  &.finance-presupuesto {
+    mat-icon { color: $indigo; }
+    border-left: 3px solid $indigo;
+  }
+
+  &.finance-cobrado {
+    mat-icon { color: $teal; }
+    border-left: 3px solid $teal;
+  }
+
+  &.finance-pendiente {
+    mat-icon { color: $amber; }
+    border-left: 3px solid $amber;
+  }
+
+  &.finance-gastado {
+    mat-icon { color: $red; }
+    border-left: 3px solid $red;
+  }
+}
+
+// ── Progress Bar ──
+.progress-section {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid $slate-200;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $slate-700;
+}
+
+.progress-pct {
+  font-size: 20px;
+  font-weight: 700;
+  color: $teal;
+}
+
+.progress-bar-cobro {
+  border-radius: 6px;
+  height: 10px;
+
+  &::ng-deep {
+    .mdc-linear-progress__bar-inner {
+      border-color: $teal;
+    }
+    .mdc-linear-progress__buffer-bar {
+      background-color: $teal-light;
+    }
+  }
+}
+
+.progress-detail {
+  display: block;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: $slate-400;
+}
+
+// ── Saldo anticipo ──
+.saldo-anticipo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  background: $green-light;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border: 1px solid #bbf7d0;
+
+  .saldo-icon mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: $green;
+  }
+
+  .saldo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .saldo-label {
+    font-size: 12px;
+    color: #166534;
+    font-weight: 500;
+  }
+
+  .saldo-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #14532d;
+  }
+
+  .saldo-desglose {
+    width: 100%;
+    font-size: 12px;
+    color: #166534;
+    opacity: 0.8;
+  }
+
+  &.saldo-negativo {
+    background: $red-light;
+    border-color: #fecaca;
+
+    .saldo-icon mat-icon { color: $red; }
+    .saldo-label { color: #991b1b; }
+    .saldo-amount { color: #7f1d1d; }
+    .saldo-desglose { color: #991b1b; }
+  }
+}
+
+// ── Tabs ──
+.detalle-tabs {
+  &::ng-deep {
+    .mat-mdc-tab-header {
+      border-bottom: 2px solid $slate-100;
+    }
+
+    .mat-mdc-tab {
+      min-width: 0;
+      flex: 1;
+      padding: 0 12px;
+      height: 52px;
+      font-weight: 600;
+    }
+
+    .mat-mdc-tab-body-wrapper {
+      margin-top: 4px;
+    }
+  }
+
+  .tab-icon {
+    margin-right: 6px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+}
+
+// ── Fase Card ──
+.fase-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid $slate-200;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+
+  &.fase-cobrada {
+    border-color: #bbf7d0;
+    background: #fafff9;
+  }
+}
+
+.fase-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fase-orden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: $indigo-light;
+  color: $indigo;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.fase-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fase-nombre {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: $slate-900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fase-monto {
+  font-size: 13px;
+  color: $slate-500;
+  font-weight: 500;
+}
+
+.fase-evidencia {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 13px;
+
+  mat-icon { color: $slate-400; }
+
+  a {
+    color: $indigo;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.btn-avanzar-fase {
+  width: 100%;
+  margin-top: 12px;
+  height: 44px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  background: $indigo;
+  color: white;
+
+  mat-icon {
+    margin-right: 6px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.btn-cobrar {
+    background: $teal;
+  }
+}
+
+.fase-completada-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 0;
+  border-radius: 10px;
+  background: $green-light;
+  color: #166534;
+  font-weight: 600;
+  font-size: 14px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// ── Gasto Card ──
+.gasto-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border-radius: 14px;
+  border: 1px solid $slate-200;
+  padding: 14px 16px;
+}
+
+.gasto-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: $red-light;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $red;
+  }
+}
+
+.gasto-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gasto-concepto {
+  font-size: 14px;
+  font-weight: 600;
+  color: $slate-900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gasto-fecha {
+  font-size: 12.5px;
+  color: $slate-400;
+  margin-top: 1px;
+}
+
+.gasto-monto {
+  font-size: 16px;
+  font-weight: 700;
+  color: $red;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+// ── Empty state ──
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: $slate-400;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: $slate-500;
+  }
+
+  span {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+}
+
+// ── Botón inline agregar gasto ──
+.btn-agregar-inline {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px dashed $slate-200;
+  font-weight: 600;
+  font-size: 14px;
+  color: $red;
+  transition: all 0.2s;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+  }
+
+  &:hover {
+    border-color: $red;
+    background: $red-light;
+  }
+}
+
+// ── FAB flotante ──
+.fab-gasto {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  background: $red !important;
+  color: white !important;
+  box-shadow: 0 4px 16px rgba($red, 0.4);
+  width: 56px;
+  height: 56px;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  &:hover {
+    box-shadow: 0 6px 24px rgba($red, 0.5);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ── Responsive: tablet/desktop ──
+@media (min-width: 480px) {
+  .finance-card .finance-amount {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .obra-detalle {
+    padding: 0 16px 40px;
+  }
+
+  .detalle-header h1 {
+    font-size: 26px;
+  }
+
+  .finance-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .finance-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 8px;
+
+    .finance-amount {
+      font-size: 22px;
+    }
+  }
+}
